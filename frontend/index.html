@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ TaskFlow | Animated To-Do with Auth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p6O0bmxrjDtt7v+2NFsQ6A8AiB+FqE2nX8g0eYBD5GypZ5a9LjBqB9x8fN2RPrFZH00iUS0mPzEYSYja4A6hMw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <div id="authContainer" class="auth-container active">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo"><i class="fas fa-tasks"></i><span>TaskFlow</span></div>
+                <p>Organize your day, accomplish more.</p>
+            </div>
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="register">Register</button>
+            </div>
+            <form id="loginForm" class="auth-form active">
+                <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="loginEmail" placeholder="Email" required></div>
+                <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="loginPassword" placeholder="Password" required></div>
+                <button type="submit" class="auth-btn"><span>Login</span><i class="fas fa-arrow-right"></i></button>
+            </form>
+            <form id="registerForm" class="auth-form">
+                <div class="input-group"><i class="fas fa-user"></i><input type="text" id="registerName" placeholder="Full name" required></div>
+                <div class="input-group"><i class="fas fa-envelope"></i><input type="email" id="registerEmail" placeholder="Email" required></div>
+                <div class="input-group"><i class="fas fa-lock"></i><input type="password" id="registerPassword" placeholder="Password (min 6)" required></div>
+                <button type="submit" class="auth-btn"><span>Create Account</span><i class="fas fa-user-plus"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div id="appContainer" class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo"><i class="fas fa-tasks"></i><span>TaskFlow</span></div>
+                <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i><span>Logout</span></button>
+            </div>
+            <div class="user-info">
+                <div class="avatar"><i class="fas fa-user-circle"></i></div>
+                <div class="user-details"><h4 id="userName"><i class="fas fa-id-badge"></i> User</h4><p id="userEmail">user@example.com</p></div>
+            </div>
+            <div class="task-stats">
+                <div class="stat-card"><i class="fas fa-list-check"></i><div class="stat-info"><span class="stat-value" id="totalTasks">0</span><span class="stat-label">Total</span></div></div>
+                <div class="stat-card"><i class="fas fa-circle-check"></i><div class="stat-info"><span class="stat-value" id="completedTasks">0</span><span class="stat-label">Done</span></div></div>
+            </div>
+            <div class="filter-section"><h4>Filter</h4><div class="filter-buttons"><button class="filter-btn active" data-filter="all">All</button><button class="filter-btn" data-filter="active">Active</button><button class="filter-btn" data-filter="completed">Completed</button></div></div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header"><h1>Your Tasks</h1><p id="greeting"></p></header>
+            <div class="add-task-card">
+                <form id="addTaskForm">
+                    <div class="task-input-row">
+                        <input type="text" id="taskTitle" placeholder="What needs to be done?" required>
+                        <select id="taskPriority"><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select>
+                        <select id="taskCompleted"><option value="0">Not Completed</option><option value="1">Completed</option></select>
+                        <input type="date" id="taskDueDate">
+                        <button type="submit" class="add-task-btn"><i class="fas fa-plus"></i><span>Add</span></button>
+                    </div>
+                    <div class="task-extra-row">
+                        <div class="extra-field">
+                            <label for="taskProgress">Progress</label>
+                            <div class="range-group"><input type="range" id="taskProgress" min="0" max="100" value="0"><span id="taskProgressValue">0%</span></div>
+                        </div>
+                        <div class="extra-field">
+                            <label for="taskPomodoroSessions">Pomodoro sessions</label>
+                            <input type="number" id="taskPomodoroSessions" min="0" value="0">
+                        </div>
+                    </div>
+                    <textarea id="taskDescription" placeholder="Add a description (optional)"></textarea>
+                </form>
+            </div>
+            <div id="bulkActionsBar" class="bulk-actions-bar" style="display: none;">
+                <div class="bulk-actions-content">
+                    <span id="selectedCount">0 selected</span>
+                    <div class="bulk-buttons">
+                        <button id="markCompletedBtn" class="bulk-complete-btn"><i class="fas fa-check-double"></i> Mark Completed</button>
+                        <button id="clearSelectionBtn" class="bulk-clear-btn"><i class="fas fa-times"></i> Clear</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tasks-container"><div id="tasksList" class="tasks-list"></div></div>
+            <section class="task-history-module">
+                <div class="history-header"><h2><i class="fas fa-history"></i> Task History</h2></div>
+                <div id="taskHistoryList" class="history-list"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>Edit Task</h2><button class="close-modal"><i class="fas fa-times"></i></button></div>
+            <form id="editTaskForm">
+                <input type="hidden" id="editTaskId">
+                <div class="input-group"><input type="text" id="editTitle" placeholder="Title" required></div>
+                <div class="input-group"><textarea id="editDescription" placeholder="Description"></textarea></div>
+                <div class="input-group"><select id="editPriority"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></div>
+                <div class="input-group"><select id="editCompleted"><option value="0">Not Completed</option><option value="1">Completed</option></select></div>
+                <div class="task-extra-row edit-extra-row">
+                    <div class="extra-field">
+                        <label for="editProgress">Progress</label>
+                        <div class="range-group"><input type="range" id="editProgress" min="0" max="100" value="0"><span id="editProgressValue">0%</span></div>
+                    </div>
+                    <div class="extra-field">
+                        <label for="editPomodoroSessions">Pomodoro sessions</label>
+                        <input type="number" id="editPomodoroSessions" min="0" value="0">
+                    </div>
+                </div>
+                <div class="input-group"><input type="date" id="editDueDate"></div>
+                <div class="modal-actions"><button type="submit" class="save-btn">Save</button><button type="button" class="cancel-btn">Cancel</button></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
