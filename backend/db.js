@@ -1,13 +1,20 @@
+const fs = require('fs');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
 
-const dbPath = path.resolve(__dirname, 'todo.db');
+const defaultDbPath = path.resolve(__dirname, 'todo.db');
+const dbPath = process.env.DB_PATH || defaultDbPath;
+
+if (!fs.existsSync(path.dirname(dbPath))) {
+  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
+}
+
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('❌ SQLite connection error:', err);
     process.exit(1);
   }
-  console.log('✅ SQLite connected');
+  console.log('✅ SQLite connected to', dbPath);
 });
 
 const runAsync = (sql, params = []) => {

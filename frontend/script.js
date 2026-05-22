@@ -1,6 +1,7 @@
-const HOST = window.location.hostname || '127.0.0.1';
-const API_BASE = `http://${HOST}:5000/api`;
-const UPLOAD_BASE = `http://${HOST}:5000/uploads`;
+const isLocalFile = window.location.protocol === 'file:';
+const ORIGIN = isLocalFile ? 'http://localhost:5000' : window.location.origin;
+const API_BASE = `${ORIGIN}/api`;
+const UPLOAD_BASE = `${ORIGIN}/uploads`;
 let authToken = null;
 let currentUser = null;
 let allTasks = [];
